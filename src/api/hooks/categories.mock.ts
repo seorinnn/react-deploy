@@ -22,7 +22,6 @@ const CATEGORIES_RESPONSE_DATA = [
 // 모킹 핸들러 설정
 export const categoriesMockHandler = [
   rest.get('https://api.example.com/api/categories', (_, res, ctx) => {
-    // 모든 /api/categories 요청에 대해 동일한 카테고리 데이터 반환
     return res(ctx.json(CATEGORIES_RESPONSE_DATA));
   }),
 ];
