@@ -1,49 +1,5 @@
 import { rest } from 'msw';
 
-import { getProductDetailPath } from './useGetProductDetail';
-import { getProductOptionsPath } from './useGetProductOptions';
-import { getProductsPath } from './useGetProducts';
-
-export const productsMockHandler = [
-  rest.get(
-    getProductsPath({
-      categoryId: '2920',
-    }),
-    (_, res, ctx) => {
-      return res(ctx.json(PRODUCTS_MOCK_DATA));
-    },
-  ),
-  rest.get(
-    getProductsPath({
-      categoryId: '2930',
-    }),
-    (_, res, ctx) => {
-      return res(ctx.json(PRODUCTS_MOCK_DATA));
-    },
-  ),
-  rest.get(getProductDetailPath(':productId'), (_, res, ctx) => {
-    return res(ctx.json(PRODUCTS_MOCK_DATA.content[0]));
-  }),
-  rest.get(getProductOptionsPath(':productId'), (_, res, ctx) => {
-    return res(
-      ctx.json([
-        {
-          id: 1,
-          name: 'Option A',
-          quantity: 10,
-          productId: 1,
-        },
-        {
-          id: 2,
-          name: 'Option B',
-          quantity: 20,
-          productId: 1,
-        },
-      ]),
-    );
-  }),
-];
-
 const PRODUCTS_MOCK_DATA = {
   content: [
     {
@@ -87,3 +43,10 @@ const PRODUCTS_MOCK_DATA = {
   size: 10,
   last: true,
 };
+
+// 모킹 핸들러 설정
+export const productsMockHandler = [
+  rest.get('https://api.example.com/api/products', (_, res, ctx) => {
+    return res(ctx.json(PRODUCTS_MOCK_DATA));
+  }),
+];
