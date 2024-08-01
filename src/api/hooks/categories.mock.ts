@@ -1,13 +1,5 @@
 import { rest } from 'msw';
 
-import { getCategoriesPath } from './useGetCategorys';
-
-export const categoriesMockHandler = [
-  rest.get(getCategoriesPath(), (_, res, ctx) => {
-    return res(ctx.json(CATEGORIES_RESPONSE_DATA));
-  }),
-];
-
 const CATEGORIES_RESPONSE_DATA = [
   {
     id: 2920,
@@ -25,4 +17,12 @@ const CATEGORIES_RESPONSE_DATA = [
     imageUrl:
       'https://img1.daumcdn.net/thumb/S104x104/?fname=https%3A%2F%2Fst.kakaocdn.net%2Fproduct%2Fgift%2Fproduct%2F20240131153049_5a22b137a8d346e9beb020a7a7f4254a.jpg',
   },
+];
+
+// 모킹 핸들러 설정
+export const categoriesMockHandler = [
+  rest.get('https://api.example.com/api/categories', (_, res, ctx) => {
+    // 모든 /api/categories 요청에 대해 동일한 카테고리 데이터 반환
+    return res(ctx.json(CATEGORIES_RESPONSE_DATA));
+  }),
 ];
