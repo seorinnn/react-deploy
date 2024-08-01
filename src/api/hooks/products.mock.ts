@@ -44,9 +44,48 @@ const PRODUCTS_MOCK_DATA = {
   last: true,
 };
 
+// 상품 데이터를 id로 찾는 함수
+const findProductById = (id: number) => {
+  return PRODUCTS_MOCK_DATA.content.find((product) => product.id === id);
+};
+
 // 모킹 핸들러 설정
 export const productsMockHandler = [
   rest.get('https://api.example.com/api/products', (_, res, ctx) => {
     return res(ctx.json(PRODUCTS_MOCK_DATA));
   }),
+  rest.get(
+    'https://api.example.com/api/products/:productId',
+    (req, res, ctx) => {
+      const { productId } = req.params;
+      const product = findProductById(Number(productId));
+
+      if (product) {
+        return res(ctx.json(product));
+      } else {
+        return res(ctx.status(404), ctx.json({ error: 'Product not found' }));
+      }
+    }
+  ),
+  rest.get(
+    'https://api.example.com/api/products/:productId/options',
+    (req, res, ctx) => {
+      return res(
+        ctx.json([
+          {
+            id: 1,
+            name: 'Option A',
+            quantity: 10,
+            productId: req.params.productId,
+          },
+          {
+            id: 2,
+            name: 'Option B',
+            quantity: 20,
+            productId: req.params.productId,
+          },
+        ])
+      );
+    }
+  ),
 ];
