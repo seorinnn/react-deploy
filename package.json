@@ -1,4 +1,5 @@
 {
+  "homepage": "https://seorinnn.github.io/react-deploy",
   "name": "kakao-tech-campus-frontend-project",
   "version": "0.1.0",
   "private": true,
@@ -7,6 +8,8 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
