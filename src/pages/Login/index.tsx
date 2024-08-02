@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useServer } from '@/provider/ServerProvider';
 
 import KAKAO_LOGO from '@/assets/kakao_logo.svg';
 import { Button } from '@/components/common/Button';
@@ -13,6 +14,7 @@ export const LoginPage = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [queryParams] = useSearchParams();
+  const { serverURL } = useServer();
 
   const handleConfirm = async () => {
     if (!id || !password) {
@@ -41,15 +43,26 @@ export const LoginPage = () => {
     }
   };
 
+  const handleKakaoLogin = () => {
+    const KAKAO_REST_API_KEY = 'YOUR_KAKAO_REST_API_KEY';
+    const REDIRECT_URI = `${serverURL}/oauth/kakao/callback`;
+    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code`;
+    window.location.href = kakaoAuthURL;
+  };
+
   return (
     <Wrapper>
-      <Logo src={KAKAO_LOGO} alt="카카고 CI" />
+      <Logo src={KAKAO_LOGO} alt='카카고 CI' />
       <FormWrapper>
-        <UnderlineTextField placeholder="이름" value={id} onChange={(e) => setId(e.target.value)} />
+        <UnderlineTextField
+          placeholder='이름'
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+        />
         <Spacing />
         <UnderlineTextField
-          type="password"
-          placeholder="비밀번호"
+          type='password'
+          placeholder='비밀번호'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -62,7 +75,9 @@ export const LoginPage = () => {
         />
         <Button onClick={handleConfirm}>로그인</Button>
         <Spacing height={20} />
-        <Link to="/signup">회원가입</Link>
+        <Button onClick={handleKakaoLogin}>카카오 로그인</Button>
+        <Spacing height={20} />
+        <Link to='/signup'>회원가입</Link>
       </FormWrapper>
     </Wrapper>
   );
