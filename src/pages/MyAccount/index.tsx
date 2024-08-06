@@ -17,6 +17,7 @@ type WishlistItem = {
 export const MyAccountPage = () => {
   const authInfo = useAuth();
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [points, setPoints] = useState<number | null>(null);
 
   const handleLogout = () => {
     authSessionStorage.set(undefined);
@@ -71,7 +72,7 @@ export const MyAccountPage = () => {
         console.error('Failed to remove wish:', error);
       }
     },
-    [authInfo],
+    [authInfo]
   );
 
   useEffect(() => {
@@ -83,6 +84,40 @@ export const MyAccountPage = () => {
     loadWishlist();
   }, [fetchWishlist]);
 
+  // 포인트 조회
+  const fetchPoints = useCallback(async () => {
+    if (!authInfo) return;
+    const token = authInfo.token;
+
+    try {
+      const response = await fetch('/api/points', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch points');
+      }
+
+      const data = await response.json();
+      return data.points;
+    } catch (error) {
+      console.error('Failed to load points:', error);
+      return null;
+    }
+  }, [authInfo]);
+
+  useEffect(() => {
+    const loadPoints = async () => {
+      const pointsData = await fetchPoints();
+      setPoints(pointsData);
+    };
+
+    loadPoints();
+  }, [fetchPoints]);
+
   const handleRemoveWish = async (wishId: string) => {
     await removeWish(Number(wishId));
     setWishlist((prev) => prev.filter((item) => item.id !== wishId));
@@ -91,9 +126,11 @@ export const MyAccountPage = () => {
   return (
     <Wrapper>
       {authInfo?.name}님 안녕하세요! <Spacing height={64} />
+      <div>포인트: {points !== null ? points : '로딩 중...'}</div>
+      <Spacing height={64} />
       <Button
-        size="small"
-        theme="darkGray"
+        size='small'
+        theme='darkGray'
         onClick={handleLogout}
         style={{
           maxWidth: '200px',
@@ -105,7 +142,7 @@ export const MyAccountPage = () => {
         {wishlist.map((wish) => (
           <WishItem key={wish.id}>
             <WishName>{wish.id}</WishName>
-            <Button size="small" onClick={() => handleRemoveWish(wish.id)}>
+            <Button size='small' onClick={() => handleRemoveWish(wish.id)}>
               삭제
             </Button>
           </WishItem>
