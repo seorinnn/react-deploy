@@ -51,3 +51,59 @@
 - Composite: 브라우저는 모든 레이어를 결합하여 최종적으로 화면에 표시한다. 이 단계에서 스크롤, 애니메이션 등과 같은 최종 렌더링 작업이 처리된다.
 - JavaScript 실행: 브라우저는 JavaScript를 실행하여 DOM과 CSSOM을 수정하거나, 사용자 인터페이스를 동적으로 업데이트한다.
 - 위 과정이 비동기적으로 수행되며, 브라우저는 성능 최적화를 위해 렌더링을 효율적으로 처리한다.
+
+## 포인트 기능 API 명세
+
+GET `/api/points` - 포인트 조회 (헤더로 유저 토큰 받음)
+
+```
+Response
+{
+  "userId": 1,
+  "points": 1000
+}
+```
+
+POST `/api/points/charge` - 포인트 충전
+
+```
+Request
+{
+  "userId": 1,
+  "points": 500
+}
+```
+
+```
+Response
+{
+  "userId": 1,
+  "points": 1500 (해당 유저 보유 포인트)
+}
+```
+
+POST `/api/orders` - 주문하기에서 할인받는 경우
+
+```
+Request
+{
+ "OptionId": 0,
+ "quantity": 0,
+ "message": "string"
+ "usePoint": true
+}
+```
+
+```
+Response (포인트 사용 시)
+{
+  "id": 0,
+  "OptionId": 0,
+  "quantity": 0,
+  "orderDateTime": "2024-07-30T04:47:41.707Z",
+  "message": "string"
+  "totalPrice": 0 (포인트 할인 적용 된 후 가격)
+  "pointUsed": 0 (사용한 포인트)
+  "remainPoint": 0 (사용하고 남은 포인트)
+}
+```
